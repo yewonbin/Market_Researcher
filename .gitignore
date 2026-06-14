@@ -1,0 +1,11 @@
+.env
+service_account.json
+data/seen.json
+__pycache__/
+*.pyc
+.venv/
+venv/
+reports/*.html
+
+.venv/
+.venv-wsl/

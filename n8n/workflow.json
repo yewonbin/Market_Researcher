@@ -1,0 +1,57 @@
+{
+  "name": "AI 보험 트렌드 리서치 Agent (Daily)",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "cronExpression",
+              "expression": "0 8 * * 1-5"
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger",
+      "name": "매일 08:00 (평일)",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [260, 300]
+    },
+    {
+      "parameters": {
+        "command": "cd /opt/market_researcher && /opt/market_researcher/.venv/bin/python run.py --json"
+      },
+      "id": "run-agent",
+      "name": "리서치 Agent 실행",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [520, 300],
+      "notes": "run.py 가 RSS 수집→Gemini 분석→이메일/Sheets 발송까지 모두 수행하고 결과 요약을 JSON(stdout)으로 반환합니다. 경로는 실제 배포 위치로 바꾸세요."
+    },
+    {
+      "parameters": {
+        "jsCode": "// run.py 의 stdout(JSON) 을 파싱해 다음 노드로 넘긴다.\nconst stdout = $input.first().json.stdout || '{}';\nlet result;\ntry {\n  result = JSON.parse(stdout.trim().split('\\n').pop());\n} catch (e) {\n  result = { status: 'parse_error', raw: stdout };\n}\nreturn [{ json: result }];"
+      },
+      "id": "parse-output",
+      "name": "결과 파싱",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [780, 300]
+    }
+  ],
+  "connections": {
+    "매일 08:00 (평일)": {
+      "main": [[{ "node": "리서치 Agent 실행", "type": "main", "index": 0 }]]
+    },
+    "리서치 Agent 실행": {
+      "main": [[{ "node": "결과 파싱", "type": "main", "index": 0 }]]
+    }
+  },
+  "settings": { "executionOrder": "v1" },
+  "active": false,
+  "pinData": {},
+  "meta": {
+    "description": "run.py 가 전체 파이프라인을 수행하는 셸 호출 방식 워크플로우. n8n 은 스케줄링/모니터링/후속 알림만 담당."
+  }
+}

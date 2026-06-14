@@ -1,0 +1,56 @@
+# ─────────────────────────────────────────────────────────────
+#  AI 보험 트렌드 리서치 Agent — 설정
+# ─────────────────────────────────────────────────────────────
+
+# Gemini 모델(무료 등급).
+#   gemini-2.0-flash       → 무료 분당 15회 (권장, 빠름)
+#   gemini-2.5-flash-lite  → 무료 분당 15회 (가장 빠름)
+#   gemini-2.5-flash       → 무료 분당 5회 (품질 ↑, 느림)
+model: gemini-2.0-flash
+
+# 분당 요청 수 상한(무료 등급 보호). 위 모델의 무료 RPM 보다 살짝 낮게 두세요.
+#   gemini-2.0-flash / 2.5-flash-lite → 12,   gemini-2.5-flash → 4
+rpm: 12
+
+# 한 번 실행 시 분석할 최대 기사 수(API 비용 상한). 신규 기사 중 상한까지만 분석.
+max_articles: 25
+
+# 기사 1건의 보험산업 관련도(relevance, 1~5) 가 이 값 미만이면 리포트에서 제외.
+min_relevance: 2
+
+# 리포트 제목/메일 제목 접두어
+report_title: "AI 보험·금융 트렌드 리서치"
+
+# ── 수집할 RSS 피드 ───────────────────────────────────────────
+# Google News RSS 검색을 사용하면 API 키 없이 키워드 타깃 수집이 됩니다.
+# q= 뒤의 키워드만 바꾸면 원하는 주제로 자유롭게 확장할 수 있습니다.
+feeds:
+  - name: "구글뉴스 · 보험 인공지능(KR)"
+    url: "https://news.google.com/rss/search?q=%EB%B3%B4%ED%97%98+%EC%9D%B8%EA%B3%B5%EC%A7%80%EB%8A%A5&hl=ko&gl=KR&ceid=KR:ko"
+  - name: "구글뉴스 · 인슈어테크(KR)"
+    url: "https://news.google.com/rss/search?q=%EC%9D%B8%EC%8A%88%EC%96%B4%ED%85%8C%ED%81%AC&hl=ko&gl=KR&ceid=KR:ko"
+  - name: "구글뉴스 · 보험금 청구 자동화(KR)"
+    url: "https://news.google.com/rss/search?q=%EB%B3%B4%ED%97%98%EA%B8%88+%EC%B2%AD%EA%B5%AC+%EC%9E%90%EB%8F%99%ED%99%94&hl=ko&gl=KR&ceid=KR:ko"
+  - name: "구글뉴스 · 보험 디지털 혁신(KR)"
+    url: "https://news.google.com/rss/search?q=%EB%B3%B4%ED%97%98%EC%82%AC+%EB%94%94%EC%A7%80%ED%84%B8+%ED%98%81%EC%8B%A0&hl=ko&gl=KR&ceid=KR:ko"
+  - name: "Google News · insurance AI underwriting(EN)"
+    url: "https://news.google.com/rss/search?q=insurance+AI+underwriting&hl=en-US&gl=US&ceid=US:en"
+  - name: "Google News · insurtech claims automation(EN)"
+    url: "https://news.google.com/rss/search?q=insurtech+claims+automation&hl=en-US&gl=US&ceid=US:en"
+  - name: "Insurance Journal(EN)"
+    url: "https://www.insurancejournal.com/feed/"
+
+# ── 분류 카테고리 ─────────────────────────────────────────────
+# 모델이 각 기사를 아래 중 하나로 분류합니다(structured output enum).
+# 자유롭게 추가/수정하세요. "기타" 는 마지막에 남겨두는 것을 권장합니다.
+categories:
+  - "LLM / 생성형 AI"
+  - "보험금 청구 자동화"
+  - "언더라이팅 / 인수심사"
+  - "콜센터 / 상담 AI"
+  - "RPA / 업무 자동화"
+  - "사기탐지 (Fraud Detection)"
+  - "헬스케어 / 디지털 헬스"
+  - "데이터 / 마이데이터"
+  - "규제 / 컴플라이언스"
+  - "기타"
